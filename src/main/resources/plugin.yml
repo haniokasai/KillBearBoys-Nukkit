@@ -1,0 +1,13 @@
+name: KillBearBoys
+main: com.haniokasai.nukkit.KillBearBoys.Main
+version: 0.0.1
+author: haniokasai
+api: ["1.0.0"]
+description: KillBearBoys
+website: http://haniokasai.com
+
+
+permissions:
+ KillBearBoys.*:
+  description: KillBearBoys
+  default: op
