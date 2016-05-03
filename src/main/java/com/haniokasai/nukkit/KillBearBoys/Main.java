@@ -63,7 +63,7 @@ public class Main extends PluginBase implements Listener{
 		   try
 		   {
 		     // create a database connection
-		     connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
+		     connection = DriverManager.getConnection("jdbc:sqlite:"+getDataFolder()+"/killb.db");
 		     Statement statement = connection.createStatement();
 		     statement.setQueryTimeout(30);  // set timeout to 30 sec.
 		     statement.executeUpdate("CREATE TABLE IF NOT EXISTS  block (xyz TEXT PRIMARY KEY, level TEXT , who TEXT ,ip TEXT, cid TEXT, action TEXT, time TEXT, blockname TEXT, blockid INT, meta INT ,skinid TEXT)");
