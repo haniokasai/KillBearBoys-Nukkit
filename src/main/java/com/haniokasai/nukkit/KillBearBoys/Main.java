@@ -1,12 +1,13 @@
 package com.haniokasai.nukkit.KillBearBoys;
 
-import java.io.File;
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
@@ -51,26 +52,50 @@ public class Main extends PluginBase implements Listener{
 
 		 this.getServer().getPluginManager().registerEvents(this, this);
 		getDataFolder().mkdir();
-		@SuppressWarnings("deprecation")
-		Config config = new Config(
-	                new File(this.getDataFolder(), "config.yml"),Config.YAML,
-	                new LinkedHashMap<String, Object>() {
-	                    {
-	                    	put("//settings", "///////");
-	                    	put("itemid", 294);
-	                    	put("metaid", 0);
-	                    	put("/////////", "/////");
-	                    	put("xyz", "base64");
-	                    }
-	                });
+		 // load the sqlite-JDBC driver using the current class loader
 
-//		     statement.executeUpdate("CREATE TABLE IF NOT EXISTS  block (xyz TEXT PRIMARY KEY, level TEXT , who TEXT ,ip TEXT, cid TEXT, action TEXT, time TEXT, blockname TEXT, blockid INT, meta INT ,skinid TEXT)");
+		try{
+			Class.forName("org.sqlite.JDBC");
+			}catch(Exception e){
+				 System.err.println(e.getMessage());
+			}
+		   Connection connection = null;
+		   try
+		   {
+		     // create a database connection
+		     connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
+		     Statement statement = connection.createStatement();
+		     statement.setQueryTimeout(30);  // set timeout to 30 sec.
+		     statement.executeUpdate("CREATE TABLE IF NOT EXISTS  block (xyz TEXT PRIMARY KEY, level TEXT , who TEXT ,ip TEXT, cid TEXT, action TEXT, time TEXT, blockname TEXT, blockid INT, meta INT ,skinid TEXT)");
 
+		     /*ResultSet rs = statement.executeQuery("select * from person");
+		     while(rs.next())
+		     {
+		       // read the result set
+		       System.out.println("name = " + rs.getString("name"));
+		       System.out.println("id = " + rs.getInt("id"));
+		     }*/
+		   }
+		   catch(SQLException e)
+		   {
+		     // if the error message is "out of memory",
+		     // it probably means no database file is found
+		     System.err.println(e.getMessage());
+		   }
+		   finally
+		   {
+		     try
+		     {
+		       if(connection != null)
+		         connection.close();
+		     }
+		     catch(SQLException e)
+		     {
+		       // connection close failed.
+		       System.err.println(e);
+		     }
+		   }
 
-
-
-
-        config.save();
         this.getServer().getLogger().info("[AdminNotice] Loaded");
 
 }

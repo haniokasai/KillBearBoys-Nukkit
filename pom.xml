@@ -10,16 +10,6 @@
   		<id>mengcraft</id>
   		<url>http://ci.mengcraft.com:8080/plugin/repository/everything/</url>
   	</repository>
-  	  	<repository>
-  		<id>haniokasai</id>
-  		<url>  	http://jenkins.haniokasai.com/plugin/repository/everything/</url>
-  	</repository>
-  	  	  	<repository>
-  		<id>mav</id>
-  		<url>http://central.maven.org/maven2/</url>
-  	</repository>
-
-
   </repositories>
 
   <properties>
@@ -27,24 +17,20 @@
   </properties>
 
   <dependencies>
-   <dependency>
-	<groupId>ru.nukkit.dblib</groupId>
-	<artifactId>DbLib</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
-		<scope>provided</scope>
-	</dependency>
+
     <dependency>
 		<groupId>cn.nukkit</groupId>
 		<artifactId>nukkit</artifactId>
 		<version>1.0-SNAPSHOT</version>
 		<scope>provided</scope>
-	</dependency>
-	<dependency>
-		<groupId>org.json</groupId>
-		<artifactId>json</artifactId>
-		<version>20160212</version>
-	</dependency>
+		</dependency>
 
+		<dependency>
+    <groupId>org.xerial</groupId>
+    <artifactId>sqlite-jdbc</artifactId>
+    <version>3.7.2</version>
+    <scope>provided</scope>
+	</dependency>
   </dependencies>
 
   <build>
@@ -68,6 +54,16 @@
            <configuration>
                <source>1.8</source>
                <target>1.8</target>
+
+
+                    <archive>
+      <manifest>
+       <addclasspath>true</addclasspath>
+       <classpathprefix>lib/</classpathprefix>
+       <mainclass>$ full qualified path to your class</mainclass>
+      </manifest>
+     </archive>
+
            </configuration>
        </plugin>
     </plugins>
