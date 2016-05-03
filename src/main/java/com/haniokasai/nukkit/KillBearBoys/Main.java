@@ -4,20 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
-import org.json.JSONObject;
-
-import cn.nukkit.Player;
-import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
-import cn.nukkit.event.block.BlockBreakEvent;
-import cn.nukkit.event.block.BlockPlaceEvent;
-import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Config;
 
@@ -104,7 +92,7 @@ public class Main extends PluginBase implements Listener{
 	}
 
 
-	@EventHandler
+/*	@EventHandler
 	public void t(PlayerInteractEvent event){
 		Player player = event.getPlayer();
 		if(player.hasPermission("KillBearBoys.touch")){
@@ -208,7 +196,7 @@ public class Main extends PluginBase implements Listener{
 		config.set(xyz,encoded);
 		config.save();
 	}
-
+*/
 
 
 }
