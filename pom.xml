@@ -86,9 +86,6 @@
                         </goals>
                         <configuration>
                             <artifactSet>
-                                <excludes>
-                                    <exclude>org.bukkit:bukkit</exclude>
-                                </excludes>
                                 <includes>
                                     <include>org.xerial:sqlite-jdbc</include>
                                 </includes>
