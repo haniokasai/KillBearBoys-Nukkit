@@ -1,23 +1,25 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.haniokasai.nukkit</groupId>
   <artifactId>KillBearBoys</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <repositories>
-  	<repository>
+        	<repository>
   		<id>mengcraft</id>
   		<url>http://ci.mengcraft.com:8080/plugin/repository/everything/</url>
   	</repository>
-  </repositories>
+    </repositories>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-
-  <dependencies>
-
+    <dependencies>
     <dependency>
 		<groupId>cn.nukkit</groupId>
 		<artifactId>nukkit</artifactId>
@@ -31,42 +33,48 @@
     <version>3.7.2</version>
     <scope>runtime</scope>
 	</dependency>
-  </dependencies>
+    </dependencies>
 
-  <build>
-	<finalName>${project.artifactId}-${project.version}</finalName>
-	<defaultGoal>clean install</defaultGoal>
-	<plugins>
-       <plugin>
-           <groupId>org.apache.maven.plugins</groupId>
-           <artifactId>maven-jar-plugin</artifactId>
-           <version>2.3.1</version>
-           <configuration>
-               <archive>
-                   <addMavenDescriptor>false</addMavenDescriptor>
-               </archive>
-           </configuration>
-       </plugin>
-       <plugin>
-           <groupId>org.apache.maven.plugins</groupId>
-           <artifactId>maven-compiler-plugin</artifactId>
-           <version>2.3.2</version>
-           <configuration>
-               <source>1.8</source>
-               <target>1.8</target>
+    <build>
+        <defaultGoal>clean install</defaultGoal>
+        <finalName>${project.artifactId}</finalName>
+        <sourceDirectory>${basedir}/src/</sourceDirectory>
 
+        <directory>target</directory>
+        <outputDirectory>target/classes</outputDirectory>
 
-                    <archive>
-      <manifest>
-       <addclasspath>true</addclasspath>
-       <classpathprefix>lib/</classpathprefix>
-       <mainclass>$ full qualified path to your class</mainclass>
-      </manifest>
-     </archive>
+        <resources>
+            <resource>
+                <targetPath>./resources/</targetPath>
+                <filtering>true</filtering>
+                <directory>${basedir}/src/resources/</directory>
+                <includes>
+                    <include>**/*.yml</include>
+                </includes>
+            </resource>
 
-           </configuration>
-       </plugin>
-  <plugin>
+            <resource>
+                <targetPath>.</targetPath>
+                <filtering>true</filtering>
+                <directory>${basedir}/src/resources/</directory>
+                <includes>
+                    <include>plugin.yml</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <version>2.5.1</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>2.0</version>
@@ -78,16 +86,17 @@
                         </goals>
                         <configuration>
                             <artifactSet>
-                            
+                                <excludes>
+                                    <exclude>org.bukkit:bukkit</exclude>
+                                </excludes>
                                 <includes>
-                                    <include>org.xerial:sqlite-jdbc</include>
+                                    <include>com.google.code.gson:gson</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-    </plugins>
-  </build>
-
+        </plugins>
+    </build>
 </project>
