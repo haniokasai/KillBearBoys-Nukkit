@@ -2,7 +2,6 @@ package com.haniokasai.nukkit.KillBearBoys;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Base64;
@@ -12,7 +11,6 @@ import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
-import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.plugin.PluginBase;
 
 
@@ -39,8 +37,7 @@ Logs
 
 public class Main extends PluginBase implements Listener{
 
-	Connection connection = null;
-	Statement statement = null;
+
 	public void onEnable() {
 
 		 this.getServer().getPluginManager().registerEvents(this, this);
@@ -57,7 +54,6 @@ public class Main extends PluginBase implements Listener{
 		   {
 		     connection = DriverManager.getConnection("jdbc:sqlite:"+getDataFolder()+"/killb.db");
 		     Statement statement = connection.createStatement();
-		     statement.setQueryTimeout(30);
 		     statement.executeUpdate("CREATE TABLE IF NOT EXISTS  block (xyz TEXT PRIMARY KEY, level TEXT , who TEXT ,ip TEXT, cid TEXT, action TEXT, time INT, blockname TEXT, blockid INT, meta INT ,skinid TEXT)");
 
 		   }
@@ -68,7 +64,16 @@ public class Main extends PluginBase implements Listener{
 		   }
 		   finally
 		   {
-
+			   try
+			      {
+			        if(connection != null)
+			          connection.close();
+			      }
+			      catch(SQLException e)
+			      {
+			        // connection close failed.
+			        System.err.println(e);
+			      }
 		   }
 
         this.getServer().getLogger().info("[AdminNotice] Loaded");
@@ -76,19 +81,10 @@ public class Main extends PluginBase implements Listener{
 }
 
 	public void onDisable() {
-		try
-	     {
-	       if(connection != null)
-	         connection.close();
-	     }
-	     catch(SQLException e)
-	     {
-	       // connection close failed.
-	       System.err.println(e);
-	     }
+
 	}
 
-
+/*
 @EventHandler
 	public void t(PlayerInteractEvent event){
 		Player player = event.getPlayer();
@@ -98,7 +94,8 @@ public class Main extends PluginBase implements Listener{
 			double z = event.getBlock().z;
 			String xyz ="x"+x+"y"+y+"z"+z;
 			try {
-			ResultSet rs = statement.executeQuery("SELECT who , ip, cid, action, blockname, blockid, meta, time ,skinid,FROM block WHERE xyz = "+xyz);
+			Statement statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery("SELECT xyz, who ,level, ip, cid, action, blockname, blockid, meta, time ,skinid FROM block WHERE xyz = "+xyz);
 			if(rs.getString("xyz") != null){
 
 				player.sendMessage("[KillBearBoys]////////////////////");
@@ -115,11 +112,16 @@ public class Main extends PluginBase implements Listener{
 		       // connection close failed.
 		       System.err.println(e);
 		     }
+		     catch(Exception e)
+		     {
+		       // connection close failed.
+		    	 player.sendMessage("[KillBearBoys]There are no log.");
+		     }
 			}else{
 				player.sendMessage("[KillBearBoys]There are no log.");
 			}
 
-	}
+	}*/
 	@EventHandler
 	public void b(BlockBreakEvent event){
 		String level = event.getPlayer().getLevel().getName();
@@ -139,11 +141,22 @@ public class Main extends PluginBase implements Listener{
 		int meta = event.getBlock().getDamage();
 		String skinid=Base64.getEncoder()
         .encodeToString(player.getSkin().toString().getBytes()).substring(0,15);
-		try {
-			statement.executeUpdate("INSERT OR REPLACE INTO block VALUES("+xyz+","+level+","+who+","+ip+","+cid+","+action+","+time+","+blockname+","+blockid+","+meta+","+skinid+","+")");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+
+
+		Connection connection = null;
+	    try{
+	    connection = DriverManager.getConnection("jdbc:sqlite:"+getDataFolder()+"/killb.db");
+	    Statement statement = connection.createStatement();
+	    statement.setQueryTimeout(30);  // set timeout to 30 sec.
+	    statement.executeUpdate("INSERT INTO honey (xyz,level, who , ip, cid, action, time, blockname, blockid, meta ,skinid) VALUES ("+xyz+","+level+","+who+","+ip+","+cid+","+action+","+time+","+blockname+","+blockid+","+meta+","+skinid+")");
+	    }catch(SQLException e){
+	      System.err.println(e.getMessage());
+	    }finally{try{
+	        if(connection != null)
+	          connection.close();}
+	      catch(SQLException e){
+	        System.err.println(e);}
+	    }
 	}
 
 	@EventHandler
@@ -164,11 +177,22 @@ public class Main extends PluginBase implements Listener{
 		int meta = event.getBlock().getDamage();
 		String skinid=Base64.getEncoder()
         .encodeToString(player.getSkin().toString().getBytes()).substring(0,15);
-		try {
-			statement.executeUpdate("INSERT OR REPLACE INTO block VALUES("+xyz+","+level+","+who+","+ip+","+cid+","+action+","+time+","+blockname+","+blockid+","+meta+","+skinid+","+")");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+
+		Connection connection = null;
+	    try{
+	    connection = DriverManager.getConnection("jdbc:sqlite:"+getDataFolder()+"/killb.db");
+	    Statement statement = connection.createStatement();
+	    statement.setQueryTimeout(30);  // set timeout to 30 sec.
+	    statement.executeUpdate("INSERT INTO honey (xyz,level, who , ip, cid, action, time, blockname, blockid, meta ,skinid) VALUES ("+xyz+","+level+","+who+","+ip+","+cid+","+action+","+time+","+blockname+","+blockid+","+meta+","+skinid+")");
+	    }catch(SQLException e){
+	      System.err.println(e.getMessage());
+	    }finally{try{
+	        if(connection != null)
+	          connection.close();}
+	      catch(SQLException e){
+	        System.err.println(e);}
+	    }
+
 	}
 
 
