@@ -125,9 +125,9 @@ public class Main extends PluginBase implements Listener{
 	@EventHandler
 	public void b(BlockBreakEvent event){
 		String level = event.getPlayer().getLevel().getName();
-		double x = event.getBlock().x;
-		double y = event.getBlock().y;
-		double z = event.getBlock().z;
+		String x = String.valueOf(Math.floor(event.getBlock().x));
+		String y = String.valueOf(Math.floor(event.getBlock().y));
+		String z = String.valueOf(Math.floor(event.getBlock().z));
 		String xyz ="x"+x+"y"+y+"z"+z;
 		Player player = event.getPlayer();
 		String who = player.getName();
@@ -162,10 +162,11 @@ public class Main extends PluginBase implements Listener{
 	@EventHandler
 	public void p(BlockPlaceEvent event){
 		String level = event.getPlayer().getLevel().getName();
-		double x = event.getBlock().x;
-		double y = event.getBlock().y;
-		double z = event.getBlock().z;
+		String x = String.valueOf(Math.floor(event.getBlock().x));
+		String y = String.valueOf(Math.floor(event.getBlock().y));
+		String z = String.valueOf(Math.floor(event.getBlock().z));
 		String xyz ="x"+x+"y"+y+"z"+z;
+		///////doubleじゃらめー－－－－－
 		Player player = event.getPlayer();
 		String who = player.getName();
 		String ip =  player.getAddress();
