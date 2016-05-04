@@ -99,7 +99,7 @@ public class Main extends PluginBase implements Listener{
 			double z = event.getBlock().z;
 			String xyz ="x"+x+"y"+y+"z"+z;
 			try {
-			ResultSet rs = statement.executeQuery("select * from person");
+			ResultSet rs = statement.executeQuery("SELECT who , ip, cid, action, blockname, blockid, meta, time ,skinid,FROM block WHERE xyz = "+xyz);
 			if(rs.getString("xyz") != null){
 
 				player.sendMessage("[KillBearBoys]////////////////////");
