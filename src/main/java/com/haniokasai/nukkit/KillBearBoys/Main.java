@@ -2,12 +2,19 @@ package com.haniokasai.nukkit.KillBearBoys;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Base64;
+import java.util.Date;
 
+import cn.nukkit.Player;
+import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
+import cn.nukkit.event.block.BlockBreakEvent;
+import cn.nukkit.event.block.BlockPlaceEvent;
+import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.plugin.PluginBase;
-import cn.nukkit.utils.Config;
 
 
 /*
@@ -34,8 +41,7 @@ Logs
 public class Main extends PluginBase implements Listener{
 
 	Connection connection = null;
-
-	Config config;
+	Statement statement = null;
 	public void onEnable() {
 
 		 this.getServer().getPluginManager().registerEvents(this, this);
@@ -50,38 +56,20 @@ public class Main extends PluginBase implements Listener{
 		   Connection connection = null;
 		   try
 		   {
-		     // create a database connection
 		     connection = DriverManager.getConnection("jdbc:sqlite:"+getDataFolder()+"/killb.db");
 		     Statement statement = connection.createStatement();
-		     statement.setQueryTimeout(30);  // set timeout to 30 sec.
-		     statement.executeUpdate("CREATE TABLE IF NOT EXISTS  block (xyz TEXT PRIMARY KEY, level TEXT , who TEXT ,ip TEXT, cid TEXT, action TEXT, time TEXT, blockname TEXT, blockid INT, meta INT ,skinid TEXT)");
+		     statement.setQueryTimeout(30);
+		     statement.executeUpdate("CREATE TABLE IF NOT EXISTS  block (xyz TEXT PRIMARY KEY, level TEXT , who TEXT ,ip TEXT, cid TEXT, action TEXT, time INT, blockname TEXT, blockid INT, meta INT ,skinid TEXT)");
 
-		     /*ResultSet rs = statement.executeQuery("select * from person");
-		     while(rs.next())
-		     {
-		       // read the result set
-		       System.out.println("name = " + rs.getString("name"));
-		       System.out.println("id = " + rs.getInt("id"));
-		     }*/
 		   }
 		   catch(SQLException e)
 		   {
-		     // if the error message is "out of memory",
-		     // it probably means no database file is found
+
 		     System.err.println(e.getMessage());
 		   }
 		   finally
 		   {
-		     try
-		     {
-		       if(connection != null)
-		         connection.close();
-		     }
-		     catch(SQLException e)
-		     {
-		       // connection close failed.
-		       System.err.println(e);
-		     }
+
 		   }
 
         this.getServer().getLogger().info("[AdminNotice] Loaded");
@@ -89,10 +77,20 @@ public class Main extends PluginBase implements Listener{
 }
 
 	public void onDisable() {
+		try
+	     {
+	       if(connection != null)
+	         connection.close();
+	     }
+	     catch(SQLException e)
+	     {
+	       // connection close failed.
+	       System.err.println(e);
+	     }
 	}
 
 
-/*	@EventHandler
+@EventHandler
 	public void t(PlayerInteractEvent event){
 		Player player = event.getPlayer();
 		if(player.hasPermission("KillBearBoys.touch")){
@@ -100,30 +98,28 @@ public class Main extends PluginBase implements Listener{
 			double y = event.getBlock().y;
 			double z = event.getBlock().z;
 			String xyz ="x"+x+"y"+y+"z"+z;
-			if(config.exists(xyz)){
+			try {
+			ResultSet rs = statement.executeQuery("select * from person");
+			if(rs.getString("xyz") != null){
 
-				String j13 =config.get(xyz).toString();
-		        String decoded = new String(Base64.getDecoder()
-		                .decode(j13));
-		        JSONObject json = new JSONObject(decoded);
-		        Iterator<String> keys = json.keys();
-		        Map<String, String> map = new HashMap<String, String>();
-		        while (keys.hasNext()) {
-		            String key = keys.next().toString();
-		            String val = json.getString(key);
-		            map.put(key, val);
-		        }
 				player.sendMessage("[KillBearBoys]////////////////////");
 				player.sendMessage("[XYZ] "+xyz);
-				player.sendMessage("[Name] "+map.get("who"));
-				player.sendMessage("[IP] "+map.get("ip")+" [CID] "+map.get("cid"));
-				player.sendMessage("[Action]"+map.get("action"));
-				player.sendMessage("[Block] "+map.get("blockname")+" [ID] "+map.get("blockid")+ ":"+map.get("meta"));
-				player.sendMessage("[Date] "+map.get("time"));
+				player.sendMessage("[Name] "+rs.getString("who"));
+				player.sendMessage("[IP] "+rs.getString("ip")+" [CID] "+rs.getString("cid"));
+				player.sendMessage("[Action]"+rs.getString("action"));
+				player.sendMessage("[Block] "+rs.getString("blockname")+" [ID] "+rs.getInt("blockid")+ ":"+rs.getInt("meta"));
+				player.sendMessage("[Date] "+rs.getInt("time")+"[SkinID]"+rs.getString("skinid"));
 				player.sendMessage("////////////////////////////////");
-
+			}}
+		     catch(SQLException e)
+		     {
+		       // connection close failed.
+		       System.err.println(e);
+		     }
+			}else{
+				player.sendMessage("[KillBearBoys]There are no log.");
 			}
-		}
+
 	}
 	@EventHandler
 	public void b(BlockBreakEvent event){
@@ -136,29 +132,18 @@ public class Main extends PluginBase implements Listener{
 		String who = player.getName();
 		String ip =  player.getAddress();
 		String cid = player.getClientSecret();
-		String action = "Break";
-        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        String time = sdf1.toString();
+		String action = "Place";
+		int time = Integer.parseInt(String.valueOf(new Date()));
 		String blockname = event.getBlock().getName();
-		String blockid = String.valueOf(event.getBlock().getId());
-		String meta = String.valueOf(event.getBlock().getDamage());
-////
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("who",who);
-		map.put("ip",ip);
-		map.put("cid",cid);
-		map.put("action",action);
-		map.put("time",time);
-		map.put("blockname",blockname);
-		map.put("blockid",blockid);
-		map.put("meta",meta);
-		map.put("level",level);
-////
-		String data= new JSONObject(map).toString();
-		String encoded = Base64.getEncoder()
-                .encodeToString(data.getBytes());
-		config.set(xyz,encoded);
-		config.save();
+		int blockid = event.getBlock().getId();
+		int meta = event.getBlock().getDamage();
+		String skinid=Base64.getEncoder()
+        .encodeToString(player.getSkin().toString().getBytes()).substring(0,15);
+		try {
+			statement.executeUpdate("INSERT OR REPLACE INTO block VALUES("+xyz+","+level+","+who+","+ip+","+cid+","+action+","+time+","+blockname+","+blockid+","+meta+","+skinid+","+")");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@EventHandler
@@ -173,30 +158,19 @@ public class Main extends PluginBase implements Listener{
 		String ip =  player.getAddress();
 		String cid = player.getClientSecret();
 		String action = "Place";
-        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        String time = sdf1.toString();
+		int time = Integer.parseInt(String.valueOf(new Date()));
 		String blockname = event.getBlock().getName();
-		String blockid = String.valueOf(event.getBlock().getId());
-		String meta = String.valueOf(event.getBlock().getDamage());
-////
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("who",who);
-		map.put("ip",ip);
-		map.put("cid",cid);
-		map.put("action",action);
-		map.put("time",time);
-		map.put("blockname",blockname);
-		map.put("blockid",blockid);
-		map.put("meta",meta);
-		map.put("level",level);
-////
-		String data= new JSONObject(map).toString();
-		String encoded = Base64.getEncoder()
-                .encodeToString(data.getBytes());
-		config.set(xyz,encoded);
-		config.save();
+		int blockid = event.getBlock().getId();
+		int meta = event.getBlock().getDamage();
+		String skinid=Base64.getEncoder()
+        .encodeToString(player.getSkin().toString().getBytes()).substring(0,15);
+		try {
+			statement.executeUpdate("INSERT OR REPLACE INTO block VALUES("+xyz+","+level+","+who+","+ip+","+cid+","+action+","+time+","+blockname+","+blockid+","+meta+","+skinid+","+")");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
-*/
+
 
 
 }
