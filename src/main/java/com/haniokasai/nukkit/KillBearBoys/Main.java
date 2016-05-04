@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Base64;
-import java.util.Date;
 
 import cn.nukkit.Player;
 import cn.nukkit.event.EventHandler;
@@ -133,7 +132,8 @@ public class Main extends PluginBase implements Listener{
 		String ip =  player.getAddress();
 		String cid = player.getClientSecret();
 		String action = "Place";
-		int time = Integer.parseInt(String.valueOf(new Date()));
+
+		int time =  (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
 		String blockname = event.getBlock().getName();
 		int blockid = event.getBlock().getId();
 		int meta = event.getBlock().getDamage();
@@ -158,7 +158,7 @@ public class Main extends PluginBase implements Listener{
 		String ip =  player.getAddress();
 		String cid = player.getClientSecret();
 		String action = "Place";
-		int time = Integer.parseInt(String.valueOf(new Date()));
+		int time =  (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
 		String blockname = event.getBlock().getName();
 		int blockid = event.getBlock().getId();
 		int meta = event.getBlock().getDamage();
