@@ -7,7 +7,10 @@ description: KillBearBoys
 website: http://haniokasai.com
 
 
-permissions:
- KillBearBoys.*:
-  description: KillBearBoys
-  default: op
+commands:
+   co:
+      description: KillBearBoys
+      usage: /co
+      permission: KillBearBoys.touch
+      permission-message: You don't have <permission>
+      default: op
