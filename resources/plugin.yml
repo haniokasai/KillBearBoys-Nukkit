@@ -1,0 +1,16 @@
+name: KillBearBoys
+main: com.haniokasai.nukkit.KillBearBoys.Main
+version: 0.0.1
+author: haniokasai
+api: ["1.0.0"]
+description: KillBearBoys
+website: http://haniokasai.com
+
+
+commands:
+   co:
+      description: KillBearBoys
+      usage: /co
+      permission: KillBearBoys.touch
+      permission-message: You don't have <permission>
+      default: op
