@@ -2,67 +2,70 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.haniokasai.nukkit</groupId>
+  <artifactId>KillBearBoys</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
 
-    <groupId>SW-Team</groupId>
-    <artifactId>PureEntities</artifactId>
-    <version>1.0</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <repositories>
+        	<repository>
+  		<id>mengcraft</id>
+  		<url>http://ci.mengcraft.com:8080/plugin/repository/everything/</url>
+  	</repository>
+    </repositories>
+
+    <dependencies>
+    <dependency>
+		<groupId>cn.nukkit</groupId>
+		<artifactId>nukkit</artifactId>
+		<version>1.0-SNAPSHOT</version>
+		<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+    <groupId>org.xerial</groupId>
+    <artifactId>sqlite-jdbc</artifactId>
+    <version>3.7.2</version>
+    <scope>compile</scope>
+	</dependency>
+    </dependencies>
+
     <build>
-        <defaultGoal>install</defaultGoal>
-        <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
-        <plugins>
+    	<plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.6</version>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <finalName>${project.artifactId}-V${project.version}</finalName>
-                    <appendAssemblyId>false</appendAssemblyId>
-                </configuration>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.3</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.xerial:sqlite-jdbc</include>
+                                </includes>
+                            </artifactSet>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
+                   <plugin>
+           <groupId>org.apache.maven.plugins</groupId>
+           <artifactId>maven-compiler-plugin</artifactId>
+           <version>2.3.2</version>
+           <configuration>
+               <source>1.8</source>
+               <target>1.8</target>
+           </configuration>
+       </plugin>
         </plugins>
-        <resources>
-            <resource>
-                <targetPath>.</targetPath>
-                <filtering>true</filtering>
-                <directory>${basedir}/src/main/resources/</directory>
-                <includes>
-                    <include>plugin.yml</include>
-                </includes>
-            </resource>
-        </resources>
     </build>
-    <repositories>
-        <repository>
-            <id>mengcraft</id>
-            <url>http://ci.mengcraft.com:8080/plugin/repository/everything/</url>
-        </repository>
-    </repositories>
-    <dependencies>
-        <dependency>
-            <groupId>cn.nukkit</groupId>
-            <artifactId>nukkit</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
 </project>
