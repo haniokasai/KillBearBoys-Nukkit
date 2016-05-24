@@ -233,7 +233,7 @@ public class Main extends PluginBase implements Listener{
 		String who = player.getName();
 		String ip =  player.getAddress();
 		String cid = player.getClientSecret();
-		String action = "Place";
+		String action = "Break";
 		String blockname = event.getBlock().getName();
 		int blockid = event.getBlock().getId();
 		int meta = event.getBlock().getDamage();
